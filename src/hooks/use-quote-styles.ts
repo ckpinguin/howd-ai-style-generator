@@ -10,6 +10,10 @@ export interface QuoteProperties {
   };
 }
 
+function isValidJson(json: any): boolean {
+  return json?.quote && json?.colors?.text && json?.colors?.background;
+}
+
 function useQuoteStyles() {
   const [quoteProperties, setQuoteProperties] =
     React.useState<QuoteProperties>();
@@ -29,7 +33,7 @@ function useQuoteStyles() {
       }
 
       const json = await response.json();
-      if (!json?.quote || !json?.colors) {
+      if (!isValidJson(json)) {
         throw new Error("Malformed response");
       }
 
