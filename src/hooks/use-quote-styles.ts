@@ -4,14 +4,22 @@ import type { Status } from "@/types";
 
 export interface QuoteProperties {
   quote: string;
+  description: string;
   colors: {
-    text: string;
     background: string;
+    text: string;
   };
+  fontName: string;
 }
 
 function isValidJson(json: any): boolean {
-  return json?.quote && json?.colors?.text && json?.colors?.background;
+  return (
+    json?.quote &&
+    json?.description &&
+    json?.background_color &&
+    json?.text_color &&
+    json?.google_font_name
+  );
 }
 
 function useQuoteStyles() {
@@ -34,15 +42,17 @@ function useQuoteStyles() {
 
       const json = await response.json();
       if (!isValidJson(json)) {
-        throw new Error("Malformed response");
+        throw new Error(`Malformed response: ${JSON.stringify(json)}`);
       }
 
       setQuoteProperties({
         quote: json.quote,
+        description: json.description,
         colors: {
-          text: json.colors.text,
-          background: json.colors.background,
+          background: json.background_color,
+          text: json.text_color,
         },
+        fontName: json.google_font_name,
       });
       setStatus("idle");
     } catch (error) {

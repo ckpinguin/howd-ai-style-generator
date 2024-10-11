@@ -1,0 +1,19 @@
+.quoteCard {
+  font-size: 1.5rem;
+}
+@media (min-width: 50rem) {
+  .quoteCard {
+    font-size: 1.75rem;
+  }
+}
+@media (min-width: 68.75rem) {
+  .quoteCard {
+    font-size: 2rem;
+  }
+}
+
+.styleItemsGrid {
+  display: grid;
+  grid-template-columns: min-content 1fr;
+  gap: 1rem;
+}

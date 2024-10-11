@@ -6,13 +6,27 @@ import { getRandomQuote } from "@/helpers/random-quotes";
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 const systemPrompt = `You will be provided with a random quotation, and your task is to generate:
-1) A hex color code that matches the mood of the quotation
-2) A contrasting color to the hex color code that matches the mood. The contrasting color should be "black" or "white" whichever has the higher WCAG
-contrast ration compared to the color that matches the mood.
+1) The same quotation but with correct spelling, grammar,
+punctuation and capitalization.
+2) three adjectives that describe the quote, to be
+returned with the key "description". For example,
+"bold, calm, professional"
+3) A hex color code that matches the mood of the quotation
+4) A contrasting color to the hex color code that matches the mood. The
+contrasting color should be "black" or "white" whichever has the higher
+WCAG contrast ration compared to the color that matches the mood.
+5) An appropriate Google font name for the quotation. This should be
+returned in the form of a valid font name. Avoid common fonts
+like "Lato" and "Roboto". Try to pick a more unusual font.
+Examples of less common fonts: "Playfair Display",
+"Marck Script", "Oswald", "Salsa"
 
 Write your output in json with these keys:
+  "corrected_quote"
+  "description"
   "hex_color"
   "text_color"
+  "google_font_name"
 `;
 
 export async function GET() {
@@ -45,13 +59,29 @@ export async function GET() {
     });
   }
   try {
-    const styles = JSON.parse(rawStyles);
+    const {
+      corrected_quote,
+      description,
+      hex_color,
+      text_color,
+      google_font_name,
+    } = JSON.parse(rawStyles);
+
+    console.log("====ORIGINAL QUOTE====", generatedQuote);
+    console.log("====OPENAI RESPONSE====", {
+      corrected_quote,
+      description,
+      hex_color,
+      text_color,
+      google_font_name,
+    });
+
     return NextResponse.json({
-      quote: generatedQuote,
-      colors: {
-        background: styles.hex_color,
-        text: styles.text_color,
-      },
+      quote: corrected_quote,
+      description,
+      background_color: hex_color,
+      text_color,
+      google_font_name,
     });
   } catch (error) {
     return NextResponse.error();
