@@ -6,11 +6,12 @@ import Separator from "@/components/Separator";
 import useQuoteStyles from "@/hooks/use-quote-styles";
 
 export default function Home() {
-  const { status, error, quoteProperties, fetchQuoteStyles } = useQuoteStyles();
+  const { status, error, quoteProperties, fetchQuoteStyles, startOver } =
+    useQuoteStyles();
 
   return (
     <main>
-      <QuoteForm fetchQuoteStyles={fetchQuoteStyles} />
+      <QuoteForm fetchQuoteStyles={fetchQuoteStyles} startOver={startOver} />
       <Separator />
       <QuoteDisplay
         status={status}

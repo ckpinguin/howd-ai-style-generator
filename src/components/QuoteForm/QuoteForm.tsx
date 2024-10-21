@@ -5,9 +5,13 @@ import styles from "./QuoteForm.module.css";
 
 type QuoteFormProps = {
   fetchQuoteStyles: (quote: string) => void;
+  startOver: () => void;
 };
 
-export default function QuoteForm({ fetchQuoteStyles }: QuoteFormProps) {
+export default function QuoteForm({
+  fetchQuoteStyles,
+  startOver,
+}: QuoteFormProps) {
   const [quote, setQuote] = useState<string>("");
 
   function handleSubmit(e: any) {
@@ -17,6 +21,7 @@ export default function QuoteForm({ fetchQuoteStyles }: QuoteFormProps) {
 
   function handleReset(e: any) {
     e.preventDefault();
+    startOver();
     setQuote("");
   }
 

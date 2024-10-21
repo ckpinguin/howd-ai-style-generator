@@ -28,16 +28,11 @@ Write your output in json with these keys:
   "text_color"
   "google_font_name"
 `;
+
 export async function GET(request: NextRequest) {
   const { searchParams } = request.nextUrl;
 
-  let quote = searchParams.get("quote");
-
-  if (quote) {
-    quote = decodeURIComponent(quote); // Decode the URL-encoded quote
-  } else {
-    quote = getRandomQuote(); // Fallback if no quote is provided
-  }
+  const quote = request.nextUrl.searchParams.get("quote") ?? getRandomQuote();
 
   try {
     const styles = await getStyles(quote);
