@@ -28,14 +28,19 @@ function useQuoteStyles() {
   const [status, setStatus] = React.useState<Status>("idle");
   const [error, setError] = React.useState<string>();
 
-  const fetchQuoteStyles = async () => {
+  const fetchQuoteStyles = async (quote: string) => {
     // reset error
     setError(undefined);
 
     try {
       // start request
       setStatus("loading");
-      const response = await fetch("/api/get-quote-styles");
+      const url = `/api/get-quote-styles${
+        quote ? `?quote=${encodeURIComponent(quote)}` : ""
+      }`;
+      console.log("fetching quote styles from", url);
+      const response = await fetch(url);
+
       if (!response.ok) {
         throw new Error(response.statusText);
       }

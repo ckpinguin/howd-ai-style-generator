@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import OpenAI from "openai";
 
 import { getRandomQuote } from "@/helpers/random-quotes";
@@ -28,10 +28,26 @@ Write your output in json with these keys:
   "text_color"
   "google_font_name"
 `;
+export async function GET(request: NextRequest) {
+  const { searchParams } = request.nextUrl;
 
-export async function GET() {
-  const generatedQuote = getRandomQuote();
+  let quote = searchParams.get("quote");
 
+  if (quote) {
+    quote = decodeURIComponent(quote); // Decode the URL-encoded quote
+  } else {
+    quote = getRandomQuote(); // Fallback if no quote is provided
+  }
+
+  try {
+    const styles = await getStyles(quote);
+    return NextResponse.json(styles);
+  } catch (error) {
+    return NextResponse.error();
+  }
+}
+
+async function getStyles(quote: string) {
   const messages = [
     {
       role: "system" as const,
@@ -39,7 +55,7 @@ export async function GET() {
     },
     {
       role: "user" as const,
-      content: generatedQuote,
+      content: quote,
     },
   ];
 
@@ -55,35 +71,31 @@ export async function GET() {
 
   if (!rawStyles) {
     return NextResponse.json({
-      quote: generatedQuote,
+      quote: quote,
     });
   }
-  try {
-    const {
-      corrected_quote,
-      description,
-      hex_color,
-      text_color,
-      google_font_name,
-    } = JSON.parse(rawStyles);
+  const {
+    corrected_quote,
+    description,
+    hex_color,
+    text_color,
+    google_font_name,
+  } = JSON.parse(rawStyles);
 
-    console.log("====ORIGINAL QUOTE====", generatedQuote);
-    console.log("====OPENAI RESPONSE====", {
-      corrected_quote,
-      description,
-      hex_color,
-      text_color,
-      google_font_name,
-    });
+  console.log("====ORIGINAL QUOTE====", quote);
+  console.log("====OPENAI RESPONSE====", {
+    corrected_quote,
+    description,
+    hex_color,
+    text_color,
+    google_font_name,
+  });
 
-    return NextResponse.json({
-      quote: corrected_quote,
-      description,
-      background_color: hex_color,
-      text_color,
-      google_font_name,
-    });
-  } catch (error) {
-    return NextResponse.error();
-  }
+  return {
+    quote: corrected_quote,
+    description,
+    background_color: hex_color,
+    text_color,
+    google_font_name,
+  };
 }

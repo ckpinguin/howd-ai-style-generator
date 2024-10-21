@@ -1,7 +1,7 @@
 "use client";
 
-import Button from "@/components/Button";
 import QuoteDisplay from "@/components/QuoteDisplay";
+import QuoteForm from "@/components/QuoteForm";
 import Separator from "@/components/Separator";
 import useQuoteStyles from "@/hooks/use-quote-styles";
 
@@ -10,7 +10,7 @@ export default function Home() {
 
   return (
     <main>
-      <Button onClick={fetchQuoteStyles}>use random quote</Button>
+      <QuoteForm fetchQuoteStyles={fetchQuoteStyles} />
       <Separator />
       <QuoteDisplay
         status={status}
